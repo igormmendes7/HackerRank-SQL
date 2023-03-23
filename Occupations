@@ -1,0 +1,14 @@
+-- Select the maximum Name value for each Occupation and pivot the data
+SELECT 
+    MAX(CASE WHEN Occupation='Doctor' THEN Name ELSE NULL END) AS 'Doctor',
+    MAX(CASE WHEN Occupation='Professor' THEN Name ELSE NULL END) AS 'Professor',
+    MAX(CASE WHEN Occupation='Singer' THEN Name ELSE NULL END) AS 'Singer',
+    MAX(CASE WHEN Occupation='Actor' THEN Name ELSE NULL END) AS 'Actor' 
+-- Sort the data by partition and group by the row number
+FROM (
+    -- Select all columns from the OCCUPATIONS table and assign a row number to each partition
+    SELECT * , ROW_NUMBER() OVER(PARTITION BY occupation ORDER BY name) AS rownumber
+    FROM occupations 
+) sub 
+-- Group the data by the row number
+GROUP BY rownumber
